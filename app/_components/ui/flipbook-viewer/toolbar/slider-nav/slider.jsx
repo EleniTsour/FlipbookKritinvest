@@ -13,6 +13,11 @@ const Slider = ({ maxSlide = 10, currentSlide, onSlideChange, totalPages }) => {
     const sliderRef = useRef(null);
     const tooltipRef = useRef(null);
 
+    const playSound = (url) => {
+        const audio = new Audio(url);
+        audio.play();
+    };
+
     // Update thumb position on value & screen size change >>>>>>>>>
     useEffect(() => {
         const updateThumbPosition = () => {
@@ -31,6 +36,7 @@ const Slider = ({ maxSlide = 10, currentSlide, onSlideChange, totalPages }) => {
     // Handle dragging the thumb >>>>>>>>>
     const handleDrag = (e, data) => {
         if (sliderRef.current) {
+            
             const sliderRect = sliderRef.current.getBoundingClientRect();
             const sliderWidth = sliderRect.width;
             const offsetX = data.x;
@@ -46,18 +52,21 @@ const Slider = ({ maxSlide = 10, currentSlide, onSlideChange, totalPages }) => {
             const tooltipLeft = Math.max(0, Math.min(offsetX - tooltipWidth / 2, sliderWidth - tooltipWidth));
             const tooltipTop = Math.max(0, Math.min(-20 - tooltipHeight / 2, sliderRect.height - tooltipHeight));
             setTooltipPosition({ left: tooltipLeft, top: tooltipTop });
+            
         }
     };
 
     // Handle onClick to change slide >>>>>>>>>
     const handleSlideChange = (e) => {
         if (sliderRef.current) {
+            
             const rect = sliderRef.current.getBoundingClientRect();
             const clickedValue = Math.min(
                 Math.max(1, Math.round(((e.clientX - rect.left) / rect.width) * (maxSlide - 1) + 1)),
                 maxSlide
             );
             setValue(clickedValue);
+            
         }
     }
 
@@ -93,6 +102,7 @@ const Slider = ({ maxSlide = 10, currentSlide, onSlideChange, totalPages }) => {
     // Update value on slide change >>>>>>>>>
     useEffect(() => {
         setValue(currentSlide);
+        playSound('page-flip.mp3');
     }, [currentSlide]);
 
     // Update debounced value on slide change >>>>>>>>>

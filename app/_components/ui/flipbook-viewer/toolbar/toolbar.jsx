@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Button } from '../../button';
 import { ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react';
 import keyboardjs from 'keyboardjs';
@@ -24,8 +24,8 @@ const Toolbar = ({ flipbookRef, containerRef, screenfull, pdfDetails, viewerStat
 
     // Keyboard shortcuts >>>>>>>>>
     useEffect(() => {
-        const handleRight = () => flipbookRef.current.pageFlip().flipNext();  audioRef.current?.play();
-        const handleLeft = () => flipbookRef.current.pageFlip().flipPrev();  audioRef.current?.play();
+        const handleRight = () => flipbookRef.current.pageFlip().flipNext();  
+        const handleLeft = () => flipbookRef.current.pageFlip().flipPrev();  
 
         keyboardjs.bind('right', null, handleRight);
         keyboardjs.bind('left', null, handleLeft);
@@ -38,7 +38,6 @@ const Toolbar = ({ flipbookRef, containerRef, screenfull, pdfDetails, viewerStat
         };
     }, [flipbookRef, fullScreen]);
 
-    const audioRef = useRef(null);
 
     return (
         <div className="px-3 w-full bg-background">
@@ -51,7 +50,7 @@ const Toolbar = ({ flipbookRef, containerRef, screenfull, pdfDetails, viewerStat
             <div className="flex items-center gap-2 pb-2 max-xl:pt-2">
                 <div className="hidden lg:block flex-1"></div>
                 <Button
-                    onClick={() => { screenWidth < 768 ? flipbookRef.current.pageFlip().turnToPrevPage() : flipbookRef.current.pageFlip().flipPrev();  audioRef.current?.play(); }}
+                    onClick={() => { screenWidth < 768 ? flipbookRef.current.pageFlip().turnToPrevPage() : flipbookRef.current.pageFlip().flipPrev();  }}
                     disabled={viewerStates.currentPageIndex === 0}
                     variant='secondary'
                     size='icon'
@@ -60,7 +59,7 @@ const Toolbar = ({ flipbookRef, containerRef, screenfull, pdfDetails, viewerStat
                     <ChevronLeft className="size-4 min-w-4" />
                 </Button>
                 <Button
-                    onClick={() => { screenWidth < 768 ? flipbookRef.current.pageFlip().turnToNextPage() : flipbookRef.current.pageFlip().flipNext();  audioRef.current?.play(); }}
+                    onClick={() => { screenWidth < 768 ? flipbookRef.current.pageFlip().turnToNextPage() : flipbookRef.current.pageFlip().flipNext();  }}
                     disabled={viewerStates.currentPageIndex === pdfDetails?.totalPages - 1 || viewerStates.currentPageIndex === pdfDetails?.totalPages - 2}
                     variant='secondary'
                     size='icon'
@@ -88,9 +87,7 @@ const Toolbar = ({ flipbookRef, containerRef, screenfull, pdfDetails, viewerStat
                     </p>
                 )}
             </div>
-            <audio ref={audioRef} preload="auto">
-                <source src="page-flip.mp3" type="audio/mpeg" />
-            </audio>
+            
         </div>
     );
 };
