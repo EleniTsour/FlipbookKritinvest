@@ -1,9 +1,10 @@
 "use client";
-import FlipbookViewer from "@/app/_components/ui/flipbook-viewer/flipbook-viewer";
-import { useSearchParams } from "next/navigation";
-import React from "react";
 
-const Page = () => {
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import FlipbookViewer from "@/app/_components/ui/flipbook-viewer/flipbook-viewer";
+
+export default function Page() {
   const searchParams = useSearchParams();
   const book = searchParams.get("book") || "1";
 
@@ -15,9 +16,9 @@ const Page = () => {
 
   return (
     <div className="h-screen">
-      <FlipbookViewer pdfUrl={pdfMap[book]} />
+      <Suspense fallback={<div>Loading book...</div>}>
+        <FlipbookViewer pdfUrl={pdfMap[book]} />
+      </Suspense>
     </div>
   );
-};
-
-export default Page;
+}
