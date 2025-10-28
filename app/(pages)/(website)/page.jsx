@@ -4,8 +4,6 @@ import { Suspense } from "react";
 import FlipbookViewer from "@/app/_components/ui/flipbook-viewer/flipbook-viewer";
 import { useSearchParams } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 function FlipbookClient() {
   const searchParams = useSearchParams();
   const book = searchParams.get("book") || "1";
