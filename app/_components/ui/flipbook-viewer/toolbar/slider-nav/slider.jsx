@@ -15,7 +15,10 @@ const Slider = ({ maxSlide = 10, currentSlide, onSlideChange, totalPages }) => {
 
     const playSound = (url) => {
         const audio = new Audio(url);
-        audio.play();
+        const playPromise = audio.play();
+        if (playPromise?.catch) {
+            playPromise.catch(() => {});
+        }
     };
 
     // Update thumb position on value & screen size change >>>>>>>>>

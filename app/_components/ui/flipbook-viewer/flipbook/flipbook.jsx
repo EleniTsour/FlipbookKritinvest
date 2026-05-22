@@ -15,10 +15,12 @@ const Flipbook = memo(({ viewerStates, setViewerStates, flipbookRef, pdfDetails,
     // Calculate scale when pageSize or dimensions change >>>>>>>>
     useEffect(() => {
         if (pdfDetails && width && height) {
-            const calculatedScale = Math.min(
+            const verticalBuffer = 48;
+            const fitScale = Math.min(
                 width / (2 * pdfDetails.width),
-                height / pdfDetails.height
+                Math.max(height - verticalBuffer, 320) / pdfDetails.height
             );
+            const calculatedScale = fitScale * 0.98;
             setScale(calculatedScale);
             setWrapperCss({
                 width: `${pdfDetails.width * calculatedScale * 2}px`,

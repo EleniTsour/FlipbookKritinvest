@@ -46,7 +46,8 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
 
       const containerHeight = containerRef.current.clientHeight;
       const toolbarHeight = toolbarRef.current?.offsetHeight || 0;
-      const nextHeight = Math.max(containerHeight - toolbarHeight, 320);
+      const layoutBuffer = 48;
+      const nextHeight = Math.max(containerHeight - toolbarHeight - layoutBuffer, 320);
 
       setAvailableHeight((currentHeight) =>
         currentHeight === nextHeight ? currentHeight : nextHeight
@@ -55,22 +56,25 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
 
     updateAvailableHeight();
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateAvailableHeight();
-    });
+    let resizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        updateAvailableHeight();
+      });
 
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
+      if (containerRef.current) {
+        resizeObserver.observe(containerRef.current);
+      }
 
-    if (toolbarRef.current) {
-      resizeObserver.observe(toolbarRef.current);
+      if (toolbarRef.current) {
+        resizeObserver.observe(toolbarRef.current);
+      }
     }
 
     window.addEventListener("resize", updateAvailableHeight);
 
     return () => {
-      resizeObserver.disconnect();
+      resizeObserver?.disconnect();
       window.removeEventListener("resize", updateAvailableHeight);
     };
   }, [pdfDetails]);
