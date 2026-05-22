@@ -6,7 +6,7 @@ const Page = ({ params }) => {
   const pdfUrl = `/${pdfName}.pdf`;
 
   return (
-    <div className="block">
+    <div className="h-screen overflow-hidden">
       <FlipbookViewer pdfUrl={pdfUrl} />
     </div>
   );

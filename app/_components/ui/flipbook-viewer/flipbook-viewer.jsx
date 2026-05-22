@@ -38,8 +38,7 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
   }, []);
 
   return (
-    
-    <div className="w-full h-screen">
+    <div className="w-full h-full overflow-hidden">
       {pdfLoading && <PdfLoading />}
       <Document
         file={pdfUrl}
@@ -48,8 +47,8 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
       >
         {pdfDetails && !pdfLoading && (
           <TransformWrapper
-          wrapperStyle={{ height: '100vh', width: '100vw' }} // or '100%'
-          contentStyle={{ height: '100%', width: '100%' }}
+          wrapperStyle={{ height: "100%", width: "100%" }}
+          contentStyle={{ height: "100%", width: "100%" }}
             doubleClick={{ disabled: true }}
             pinch={{ step: 2 }}
             disablePadding={viewerStates?.zoomScale <= 1}
