@@ -38,7 +38,7 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
   }, []);
 
   return (
-    <div className="w-full h-full overflow-hidden">
+    <div ref={containerRef} className="flex h-full w-full flex-col overflow-hidden">
       {pdfLoading && <PdfLoading />}
       <Document
         file={pdfUrl}
@@ -59,8 +59,8 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
               setViewerStates({ ...viewerStates, zoomScale: state.scale })
             }
           >
-            <div className="flex flex-col flex-grow overflow-hidden" style={{ height: "100%" }}>
-              <div className="flex-1 overflow-hidden">
+            <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+              <div className="min-h-0 flex-1 overflow-hidden">
                 <Flipbook
                   viewerStates={viewerStates}
                   setViewerStates={setViewerStates}
@@ -69,14 +69,16 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
                   pdfDetails={pdfDetails}
                 />
               </div>
-              <Toolbar
-                viewerStates={viewerStates}
-                setViewerStates={setViewerStates}
-                containerRef={containerRef}
-                flipbookRef={flipbookRef}
-                screenfull={screenfull}
-                pdfDetails={pdfDetails}
-              />
+              <div className="shrink-0">
+                <Toolbar
+                  viewerStates={viewerStates}
+                  setViewerStates={setViewerStates}
+                  containerRef={containerRef}
+                  flipbookRef={flipbookRef}
+                  screenfull={screenfull}
+                  pdfDetails={pdfDetails}
+                />
+              </div>
             </div>
           </TransformWrapper>
         )}
