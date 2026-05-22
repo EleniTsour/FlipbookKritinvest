@@ -6,7 +6,7 @@ import { cn } from '@/app/_lib/utils';
 import { TransformComponent } from 'react-zoom-pan-pinch';
 import screenfull from 'screenfull';
 
-const Flipbook = memo(({ viewerStates, setViewerStates, flipbookRef, pdfDetails }) => {
+const Flipbook = memo(({ viewerStates, setViewerStates, flipbookRef, pdfDetails, availableHeight }) => {
     const { ref, width, height, refreshSize } = useRefSize();
     const [scale, setScale] = useState(1); // Max scale for flipbook
     const [wrapperCss, setWrapperCss] = useState({});
@@ -50,7 +50,11 @@ const Flipbook = memo(({ viewerStates, setViewerStates, flipbookRef, pdfDetails 
     }, [handleFullscreenChange]);
 
     return (
-        <div ref={ref} className={cn("relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden bg-transparent")}>
+        <div
+            ref={ref}
+            className={cn("relative h-[30rem] xs:h-[30rem] lg:h-[52rem] xl:h-[56rem] w-full bg-transparent flex justify-center items-center overflow-hidden")}
+            style={availableHeight ? { height: `${availableHeight}px` } : undefined}
+        >
             <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
                 <div className='overflow-hidden flex justify-center items-center h-full w-full'>
                     {pdfDetails && scale && (

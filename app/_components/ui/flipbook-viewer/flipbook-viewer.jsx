@@ -1,7 +1,6 @@
 "use client";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Toolbar from "./toolbar/toolbar";
-import { cn } from "@/app/_lib/utils";
 import Flipbook from "./flipbook/flipbook";
 import screenfull from "screenfull";
 import { TransformWrapper } from "react-zoom-pan-pinch";
@@ -15,8 +14,10 @@ import "react-pdf/dist/Page/TextLayer.css";
 const FlipbookViewer = ({ pdfUrl, className }) => {
   const containerRef = useRef(); // For full screen container
   const flipbookRef = useRef();
+  const toolbarRef = useRef();
   const [pdfLoading, setPdfLoading] = useState(true);
   const [pdfDetails, setPdfDetails] = useState(null);
+  const [availableHeight, setAvailableHeight] = useState(null);
   const [viewerStates, setViewerStates] = useState({
     currentPageIndex: 0,
     zoomScale: 1,
@@ -37,8 +38,45 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const updateAvailableHeight = () => {
+      if (!containerRef.current) {
+        return;
+      }
+
+      const containerHeight = containerRef.current.clientHeight;
+      const toolbarHeight = toolbarRef.current?.offsetHeight || 0;
+      const nextHeight = Math.max(containerHeight - toolbarHeight, 320);
+
+      setAvailableHeight((currentHeight) =>
+        currentHeight === nextHeight ? currentHeight : nextHeight
+      );
+    };
+
+    updateAvailableHeight();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateAvailableHeight();
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    if (toolbarRef.current) {
+      resizeObserver.observe(toolbarRef.current);
+    }
+
+    window.addEventListener("resize", updateAvailableHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateAvailableHeight);
+    };
+  }, [pdfDetails]);
+
   return (
-    <div ref={containerRef} className="flex h-full w-full flex-col overflow-hidden">
+    <div ref={containerRef} className="w-full h-full overflow-hidden">
       {pdfLoading && <PdfLoading />}
       <Document
         file={pdfUrl}
@@ -59,17 +97,18 @@ const FlipbookViewer = ({ pdfUrl, className }) => {
               setViewerStates({ ...viewerStates, zoomScale: state.scale })
             }
           >
-            <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
-              <div className="min-h-0 flex-1 overflow-hidden">
+            <div className="flex flex-col flex-grow overflow-hidden" style={{ height: "100%" }}>
+              <div className="flex-1 overflow-hidden">
                 <Flipbook
                   viewerStates={viewerStates}
                   setViewerStates={setViewerStates}
                   flipbookRef={flipbookRef}
                   screenfull={screenfull}
                   pdfDetails={pdfDetails}
+                  availableHeight={availableHeight}
                 />
               </div>
-              <div className="shrink-0">
+              <div ref={toolbarRef}>
                 <Toolbar
                   viewerStates={viewerStates}
                   setViewerStates={setViewerStates}
